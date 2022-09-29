@@ -1,0 +1,3 @@
+rootProject.name = 'kafka-java-beginner'
+include 'kafka-basics'
+
