@@ -1,8 +1,6 @@
 package com.korben.demos.kafka;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +14,9 @@ import java.util.Properties;
  * @Date 29/9/2022 10:36 pm
  **/
 
-public class ProducerDemo {
+public class ProducerCallbackDemo {
 
-    private static final Logger log = LoggerFactory.getLogger(ProducerDemo.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(ProducerCallbackDemo.class.getSimpleName());
 
     public static void main(String[] args) {
         log.info("Starting producer");
@@ -36,7 +34,25 @@ public class ProducerDemo {
         ProducerRecord<String, String> record = new ProducerRecord<>("java_demo", "Hello this is a test");
 
         // send data (async)
-        producer.send(record);
+        for (int i = 0; i < 10; i++) {
+            producer.send(record, (metadata, exception) -> {
+                if (exception == null) {
+                    log.info("receive metadata \n" +
+                            "Topic: " + metadata.topic() + "\n" +
+                            "Partition: " + metadata.partition() + "\n" +
+                            "Offset: " + metadata.offset() + "\n" +
+                            "Timestamp: " + metadata.timestamp() + "\n");
+                } else {
+                    log.error("Record send failed", exception);
+                }
+            });
+
+            try {
+                Thread.sleep(1000);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
         // flush and close producer (sync)
         producer.flush();
