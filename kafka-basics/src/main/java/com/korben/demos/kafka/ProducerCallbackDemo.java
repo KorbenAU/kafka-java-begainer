@@ -23,7 +23,7 @@ public class ProducerCallbackDemo {
 
         // create producer properties
         Properties properties = new Properties();
-        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.1.101:29092,192.168.1.101:39092");
+        properties.setProperty(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.1.101:19092,192.168.1.101:29092,192.168.1.101:39092");
         properties.setProperty(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         properties.setProperty(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
@@ -34,7 +34,7 @@ public class ProducerCallbackDemo {
         ProducerRecord<String, String> record = new ProducerRecord<>("java_demo", "Hello this is a test");
 
         // send data (async)
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 20; i++) {
             producer.send(record, (metadata, exception) -> {
                 if (exception == null) {
                     log.info("receive metadata \n" +
